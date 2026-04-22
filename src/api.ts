@@ -11,6 +11,8 @@ export const fetchTenders = async (
   pagination: { skip: number; take: number };
   results: Tender[];
 }> => {
+  // Small delay to see the scroll infinite loading
+  // await new Promise((resolve) => setTimeout(resolve, 1500));
   const res = await api.post("/tenders/search", pagination);
 
   return res.data;

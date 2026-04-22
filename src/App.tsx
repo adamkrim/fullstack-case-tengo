@@ -1,10 +1,14 @@
+import { useEffect } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInView } from "react-intersection-observer";
 import { fetchTenders } from "./api";
 import type { Tender } from "./types";
 
 const PAGE_SIZE = 3;
 
 function App() {
+  const { ref, inView } = useInView();
+
   const {
     data,
     isLoading,
@@ -18,10 +22,16 @@ function App() {
       fetchTenders({ skip: pageParam, take: PAGE_SIZE }),
     initialPageParam: 0,
     getNextPageParam: (lastPage, _pages, lastPageParam) => {
-      if (lastPage.results.length < PAGE_SIZE) return null;
+      if (lastPage.results.length < PAGE_SIZE) return undefined;
       return lastPageParam + PAGE_SIZE;
     },
   });
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Something went wrong!</p>;
@@ -37,17 +47,13 @@ function App() {
           <li key={tender.id}>{tender.title}</li>
         ))}
       </ul>
-      <button
-        type="button"
-        onClick={() => fetchNextPage()}
-        disabled={!hasNextPage || isFetchingNextPage}
-      >
+      <div ref={ref}>
         {isFetchingNextPage
           ? "Loading more..."
-          : hasNextPage
-            ? "Load More"
-            : "Nothing more to load"}
-      </button>
+          : !hasNextPage
+            ? "Nothing more to load"
+            : null}
+      </div>
     </div>
   );
 }
