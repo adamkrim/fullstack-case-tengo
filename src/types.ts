@@ -4,7 +4,7 @@ export type Pagination = {
 };
 
 export type DataPointSource = {
-  pageNumber: number;
+  pageNumber: number | null;
   docFilePath: string;
   originalChunkExtract: string;
 };
@@ -18,6 +18,10 @@ export type EnrichedField<T> = {
 export type BuyerLocation = {
   city: string;
   postalCode: string;
+};
+
+export type ExecutionLocation = {
+  postalCode: string | null;
 };
 
 export type Buyer = {
@@ -47,10 +51,10 @@ export type Tender = {
   status: "OPEN" | "CLOSED";
   publicationDate: string;
   responseDeadline: string;
-  executionLocation: string | null;
-  buyerContact: {
-    location: BuyerLocation;
-  };
+  executionLocation: ExecutionLocation | null;
+  buyerContact:
+    | { location: BuyerLocation; contact?: never }
+    | { contact: string; location?: never };
   estimatedValueInEur: number | null;
   estimatedValueInEurMeta: EnrichedField<number>;
   durationInMonth: number | null;
