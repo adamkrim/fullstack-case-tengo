@@ -1,13 +1,37 @@
 import { useEffect } from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useQueryClient,
+  type InfiniteData,
+} from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
-import { fetchTenders } from "./api";
+import { fetchTenders, saveInteraction } from "./api";
 import { TenderCard } from "./components/TenderCard";
+import type { TenderPage } from "./types";
 
 const PAGE_SIZE = 20;
 
 function App() {
+  const queryClient = useQueryClient();
   const { ref, inView } = useInView();
+
+  const handleInteraction = (
+    id: number,
+    decisionStatus: "TO_ANALYZE" | "REJECTED"
+  ) => {
+    queryClient.setQueryData<InfiniteData<TenderPage>>(["tenders"], (old) =>
+      old
+        ? {
+            ...old,
+            pages: old.pages.map((page) => ({
+              ...page,
+              results: page.results.filter((t) => t.id !== id),
+            })),
+          }
+        : old
+    );
+    saveInteraction(id, decisionStatus);
+  };
 
   const {
     data,
@@ -49,8 +73,8 @@ function App() {
           <TenderCard
             key={tender.id}
             tender={tender}
-            onAccept={(id) => console.log("accept", id)}
-            onReject={(id) => console.log("reject", id)}
+            onAccept={(id) => handleInteraction(id, "TO_ANALYZE")}
+            onReject={(id) => handleInteraction(id, "REJECTED")}
           />
         ))}
 

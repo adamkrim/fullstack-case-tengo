@@ -3,6 +3,11 @@ export type Pagination = {
   take: number;
 };
 
+export type TenderPage = {
+  pagination: Pagination;
+  results: Tender[];
+};
+
 export type DataPointSource = {
   pageNumber: number | null;
   docFilePath: string;

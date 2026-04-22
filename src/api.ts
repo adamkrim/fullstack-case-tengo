@@ -5,6 +5,13 @@ const api = axios.create({
   baseURL: "http://localhost:3000",
 });
 
+export const saveInteraction = async (
+  tenderId: number,
+  decisionStatus: "TO_ANALYZE" | "REJECTED"
+): Promise<void> => {
+  await api.post("/interactions/decisionStatus", { tenderId, decisionStatus });
+};
+
 export const fetchTenders = async (
   pagination: Pagination
 ): Promise<{
