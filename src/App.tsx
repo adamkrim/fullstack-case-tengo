@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import {
   useInfiniteQuery,
   useQueryClient,
@@ -15,23 +15,45 @@ function App() {
   const queryClient = useQueryClient();
   const { ref, inView } = useInView();
 
+  const removeTenderFromCache = useCallback(
+    (id: number) => {
+      queryClient.setQueryData<InfiniteData<TenderPage>>(["tenders"], (old) =>
+        old
+          ? {
+              ...old,
+              pages: old.pages.map((page) => ({
+                ...page,
+                results: page.results.filter((t) => t.id !== id),
+              })),
+            }
+          : old
+      );
+    },
+    [queryClient]
+  );
+
   const handleInteraction = (
     id: number,
     decisionStatus: "TO_ANALYZE" | "REJECTED"
   ) => {
-    queryClient.setQueryData<InfiniteData<TenderPage>>(["tenders"], (old) =>
-      old
-        ? {
-            ...old,
-            pages: old.pages.map((page) => ({
-              ...page,
-              results: page.results.filter((t) => t.id !== id),
-            })),
-          }
-        : old
-    );
+    removeTenderFromCache(id);
     saveInteraction(id, decisionStatus);
+    new BroadcastChannel("tenders").postMessage({ type: "decided", id });
   };
+
+  useEffect(() => {
+    // Broadcast created only once to avoid multiple listeners
+    const channel = new BroadcastChannel("tenders");
+
+    channel.onmessage = (e) => {
+      if (e.data.type === "decided") {
+        removeTenderFromCache(e.data.id);
+      }
+    };
+
+    // Cleanup the channel when the component unmounts
+    return () => channel.close();
+  }, [removeTenderFromCache]);
 
   const {
     data,

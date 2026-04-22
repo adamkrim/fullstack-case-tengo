@@ -27,6 +27,7 @@ app.post("/interactions/decisionStatus", (req, res) => {
   }
   interactions.push({ tenderId, decisionStatus });
   console.log("interactions", interactions);
+
   res.status(200).json({});
 });
 
