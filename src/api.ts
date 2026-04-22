@@ -11,9 +11,7 @@ export const fetchTenders = async (
   pagination: { skip: number; take: number };
   results: Tender[];
 }> => {
-  const res = await api.post("/tenders/search", {
-    pagination,
-  });
+  const res = await api.post("/tenders/search", pagination);
 
   return res.data;
 };
