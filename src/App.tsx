@@ -3,6 +3,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
 import { fetchTenders } from "./api";
 import type { Tender } from "./types";
+import { Button } from "@/components/ui/button";
 
 const PAGE_SIZE = 3;
 
@@ -41,6 +42,7 @@ function App() {
 
   return (
     <div>
+      <Button>Click me</Button>
       <h1>Tenders</h1>
       <ul>
         {tenders.map((tender: Tender) => (
