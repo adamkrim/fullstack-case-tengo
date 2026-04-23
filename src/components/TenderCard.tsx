@@ -1,7 +1,7 @@
-import type { Tender } from "@/types";
-import { Card, CardContent } from "./ui/card";
 import viteLogo from "@/assets/vite.svg";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import type { Tender } from "@/types";
 
 function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString("fr-FR", {

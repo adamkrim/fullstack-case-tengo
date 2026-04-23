@@ -9,6 +9,8 @@ export const saveInteraction = async (
   tenderId: number,
   decisionStatus: "TO_ANALYZE" | "REJECTED"
 ): Promise<void> => {
+  // await new Promise((resolve) => setTimeout(resolve, 1000));
+  // throw new Error("Fake API Error");
   await api.post("/interactions/decisionStatus", { tenderId, decisionStatus });
 };
 
