@@ -5,6 +5,7 @@ export type Pagination = {
 
 export type TenderPage = {
   pagination: Pagination;
+  total: number;
   results: Tender[];
 };
 

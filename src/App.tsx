@@ -4,6 +4,7 @@ import { useTenders } from "./hooks/useTenders";
 function App() {
   const {
     tenders,
+    total,
     isLoading,
     isError,
     hasNextPage,
@@ -22,6 +23,11 @@ function App() {
       <div className="max-w-3xl mx-auto py-8 px-4">
         <h1 className="text-xl font-bold text-gray-900 mb-6">
           Appels d'offres
+          {total !== null && (
+            <span className="ml-2 text-sm font-medium text-muted-foreground">
+              ({total})
+            </span>
+          )}
         </h1>
         <TenderList
           tenders={tenders}

@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { Pagination, Tender } from "./types";
+import type { Pagination, TenderPage } from "./types";
 
 const api = axios.create({
   baseURL: "http://localhost:3000",
@@ -16,10 +16,7 @@ export const saveInteraction = async (
 
 export const fetchTenders = async (
   pagination: Pagination
-): Promise<{
-  pagination: { skip: number; take: number };
-  results: Tender[];
-}> => {
+): Promise<TenderPage> => {
   // Small delay to see the scroll infinite loading
   // await new Promise((resolve) => setTimeout(resolve, 1500));
   const res = await api.post("/tenders/search", pagination);

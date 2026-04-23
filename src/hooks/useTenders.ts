@@ -101,8 +101,15 @@ export function useTenders() {
     [data, decidedIds]
   );
 
+  const total = React.useMemo(() => {
+    const backendTotal = data?.pages[0]?.total ?? null;
+    if (backendTotal === null) return null;
+    return Math.max(0, backendTotal - decidedIds.size);
+  }, [data, decidedIds]);
+
   return {
     tenders,
+    total,
     isLoading,
     isError,
     hasNextPage,
